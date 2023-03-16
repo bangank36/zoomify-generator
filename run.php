@@ -12,6 +12,7 @@ $destination = 'output';
 // Set your configuration options
 $config = [
     // Add your config options here
+    "destinationRemove" => true,
 ];
 
 // Setup the Zoomify library
