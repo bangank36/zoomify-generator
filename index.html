@@ -100,14 +100,14 @@
       (async () => {
         const deepzoomImages = await fetch("output/output.json");
         const deepzoomImagesJson = await deepzoomImages.json();
-        console.log(deepzoomImagesJson);
 
+        // Origin config to fetch images from different source, so far only local is supported
         const origins = {
           'Local': '/output'
         };
 
         deepzoomImagesJson.forEach((image, index) => {
-          for (let origin in origins) {
+          for (let source in origins) {
             let template = `
               <div class="pswp-gallery__item">
                 <a  
@@ -116,16 +116,16 @@
                   data-pswp-height="${image.fullHeight}"
 
                   data-pswp-tile-type="zoomify"
-                  data-pswp-tile-url="${origins[origin]}/${image.image}/TileGroup{zoomify_group}/{z}-{x}-{y}.jpg"
+                  data-pswp-tile-url="${origins[source]}/${image.image}/TileGroup{zoomify_group}/{z}-{x}-{y}.jpg"
                   data-pswp-tile-size="${image.tileSize}"
                   data-pswp-max-width="${image.originWidth}"
                   data-pswp-max-height="${image.originHeight}"
                   data-pswp-tile-overlap="${image.tileOverlap}"
                   target="_blank">
-                  <img src="${origins[origin]}/${image.image}/TileGroup0/0-0-0.jpg" alt="${image.image}" />
+                  <img src="${origins[source]}/${image.image}/TileGroup0/0-0-0.jpg" alt="${image.image}" />
                 </a>
                 <div class="caption">
-                  <a href="#"><strong>${image.image} - Origin: ${origin}</strong></a>
+                  <a href="#"><strong>${image.image} - Origin: ${source}</strong></a>
                   <br>
                   ${image.tileSize}x${image.tileSize} - ${image.fileCount} tiles
                   <br>
@@ -133,6 +133,32 @@
                 </div>
               </div>
               `;
+
+              if ( image.format === "deepzoom" ) {
+                template = `
+                  <div class="pswp-gallery__item">
+                    <a  
+                      href="/output/${image.image}/full.jpg" 
+                      data-pswp-width="${image.fullWidth}"
+                      data-pswp-height="${image.fullHeight}"
+                      data-pswp-tile-url="/output/${image.image}/output_files/{z}/{x}_{y}.jpg"
+                      data-pswp-tile-size="${image.tileSize}"
+                      data-pswp-max-width="${image.originWidth}"
+                      data-pswp-max-height="${image.originHeight}"
+                      data-pswp-tile-overlap="${image.tileOverlap}"
+                      target="_blank">
+                      <img src="/output/${image.image}/full.jpg" alt="Single demo image" />
+                    </a>
+                    <div class="caption">
+                      <a href="#"><strong>${image.image} - Origin: ${origin}</strong></a>
+                      <br>
+                      ${image.tileSize}x${image.tileSize} - ${image.fileCount} tiles
+                      <br>
+                      ${image.format} tile format - ${image.folderSize.toFixed(2)}Mb
+                    </div>
+                  </div>
+                  `;
+              }
               document.querySelector('#gallery').insertAdjacentHTML('beforeend', template);
         }
           
