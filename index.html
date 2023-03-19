@@ -62,46 +62,24 @@
   </head>
   <body>
     <div class="main-page-content">
-    <h1><a href="https://github.com/dimsemenov/photoswipe-deep-zoom-plugin">Deep Zoom plugin</a> for the <a href="https://photoswipe.com">PhotoSwipe</a></h1>
+    <h1>
+      Deepzoom speedtest
+    </h1>
     <p>
-      A plugin that adds tile-based zoom support to PhotoSwipe. Supports Deepzoom and Zoomify tile formats.
+      Click on  the images with different origin to see the time different  
+      PS: please wait for the page to fully load before clicking on the thumb images
     </p>
-    <p>Unlike conventional viewers such as <a href="https://openlayers.org/en/latest/examples/zoomify.html" rel="nofollow">OpenLayers</a> or <a href="https://openseadragon.github.io/" rel="nofollow">OpenSeaDragon</a>, it displays tiles only when user zooms beyond the primary image size. If user does not zoom - PhotoSwipe operates as usual.</p> 
-    <p>Also adds incremental zoom buttons and overrides double-tap behaviour.</p>
-    <div class="pswp-gallery" id="gallery">
-      <div class="pswp-gallery__item">
-        <a  
-          href="output/pexels-max-rahubovskiy-5997992--zoomify/full.jpg" 
-          data-pswp-width="2500"
-          data-pswp-height="1668"
-
-          data-pswp-tile-type="zoomify"
-          data-pswp-tile-url="output/pexels-max-rahubovskiy-5997992--zoomify/TileGroup{zoomify_group}/{z}-{x}-{y}.jpg"
-          data-pswp-tile-size="256"
-          data-pswp-max-width="7358"
-          data-pswp-max-height="4911"
-          target="_blank">
-          <img src="output/pexels-max-rahubovskiy-5997992--zoomify/TileGroup0/0-0-0.jpg" alt="A sergeant of the Light Horse" />
-        </a>
-        <div class="caption">
-          <a href="https://nga.gov.au/exhibition/lambert/detail.cfm?IRN=162564"><strong>A sergeant of the Light Horse</strong></a>
-          <br>
-          George Lambert
-          <br>
-          Zoomify tile format
-        </div>
-      </div>
-    </div>
+    <div class="pswp-gallery" id="gallery"></div>
 
     <div class="pswp-test">
         <label for="display_layer_borders">
-          <input type="checkbox" id="display_layer_borders" name="display_layer_borders">Display layer borders
+          <input type="checkbox" id="display_layer_borders" name="display_layer_borders" checked>Display layer borders
         </label>
     </div>
     <script>
       /* debug stuff */
       window.pswpDebug = {
-        display_layer_borders: false,
+        display_layer_borders: true,
       };
       for(let key in window.pswpDebug) {
         document.querySelector('#' + key).checked = window.pswpDebug[key];
@@ -116,37 +94,77 @@
         });
       });
     </script>
-
     <script type="module">
       import PhotoSwipeLightbox from 'https://unpkg.com/photoswipe@beta/dist/photoswipe-lightbox.esm.js';
-     
-      let deepZoomPlugin;
-      const lightbox = new PhotoSwipeLightbox({
-        gallery: '#gallery',
-        children: '.pswp-gallery__item > a',
-    
-        pswpModule: () => import('https://unpkg.com/photoswipe@beta/dist/photoswipe.esm.js'),
+      // Load deep zoom images
+      (async () => {
+        const deepzoomImages = await fetch("output/output.json");
+        const deepzoomImagesJson = await deepzoomImages.json();
+        console.log(deepzoomImagesJson);
 
-        // dynamically load deep zoom plugin
-        openPromise: () => {
-          // make sure it's initialized only once per lightbox
-          if (!deepZoomPlugin) {
-            return import('https://dimsemenov.github.io/photoswipe-deep-zoom-plugin/src/index.js').then((deepZoomPluginModule) => {
-              deepZoomPlugin = new deepZoomPluginModule.default(lightbox, {
-                // deep zoom plugin options
-              });
-            })
-          }
-        },
-        
-        // Recommended PhotoSwipe options for this plugin
-        allowPanToNext: false, // prevent swiping to the next slide when image is zoomed
-        allowMouseDrag: true, // display dragging cursor at max zoom level
-        wheelToZoom: true, // enable wheel-based zoom
-        zoom: false // disable default zoom button
+        const origins = {
+          'Local': '/output'
+        };
+
+        deepzoomImagesJson.forEach((image, index) => {
+          for (let origin in origins) {
+            let template = `
+              <div class="pswp-gallery__item">
+                <a  
+                  href="/output/${image.image}/${image.fullImage}" 
+                  data-pswp-width="${image.fullWidth}"
+                  data-pswp-height="${image.fullHeight}"
+
+                  data-pswp-tile-type="zoomify"
+                  data-pswp-tile-url="${origins[origin]}/${image.image}/TileGroup{zoomify_group}/{z}-{x}-{y}.jpg"
+                  data-pswp-tile-size="${image.tileSize}"
+                  data-pswp-max-width="${image.originWidth}"
+                  data-pswp-max-height="${image.originHeight}"
+                  data-pswp-tile-overlap="${image.tileOverlap}"
+                  target="_blank">
+                  <img src="${origins[origin]}/${image.image}/TileGroup0/0-0-0.jpg" alt="${image.image}" />
+                </a>
+                <div class="caption">
+                  <a href="#"><strong>${image.image} - Origin: ${origin}</strong></a>
+                  <br>
+                  ${image.tileSize}x${image.tileSize} - ${image.fileCount} tiles
+                  <br>
+                  Zoomify tile format - ${image.folderSize.toFixed(2)}Mb
+                </div>
+              </div>
+              `;
+              document.querySelector('#gallery').insertAdjacentHTML('beforeend', template);
+        }
+          
+        let deepZoomPlugin;
+        const lightbox = new PhotoSwipeLightbox({
+          gallery: '#gallery',
+          children: '.pswp-gallery__item > a',
+      
+          pswpModule: () => import('https://unpkg.com/photoswipe@beta/dist/photoswipe.esm.js'),
+
+          // dynamically load deep zoom plugin
+          openPromise: () => {
+            // make sure it's initialized only once per lightbox
+            if (!deepZoomPlugin) {
+              return import('https://dimsemenov.github.io/photoswipe-deep-zoom-plugin/src/index.js').then((deepZoomPluginModule) => {
+                deepZoomPlugin = new deepZoomPluginModule.default(lightbox, {
+                  // deep zoom plugin options
+                });
+              })
+            }
+          },
+          
+          // Recommended PhotoSwipe options for this plugin
+          allowPanToNext: false, // prevent swiping to the next slide when image is zoomed
+          allowMouseDrag: true, // display dragging cursor at max zoom level
+          wheelToZoom: true, // enable wheel-based zoom
+          zoom: false // disable default zoom button
+        });
+        lightbox.init();
       });
-      lightbox.init();
-      </script>
+    })();
+    </script>
     </div>
   </body>
 </html>
