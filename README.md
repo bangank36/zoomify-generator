@@ -22,6 +22,12 @@ Origin Readme can be [found here](https://github.com/Daniel-KM/LibraryZoomify/bl
 | tileQuality        | 85            | int        | The quality of the output tiles (only applicable for lossy formats like JPEG)                         | Any integer value between 1 and 100 (inclusive), where 1 is the lowest quality (highest compression) and 100 is the highest quality (lowest compression) |
 | * tileLayout        | 'zoomiy'            | string        | Supported output layout for libvips  | allowed: dz, zoomify, google, iiif, iiif3 |  
 ### Generated files on default config
-TBD
+```
+// Setup the Zoomify library.
+$zoomify = new ExtendZoomify($config);
+
+// Process the source file and save tiles in the destination folder
+$result = $zoomify->process($source, $destination);
+```
 ### Modify the main `run.php` to run against a list of images
 TBD
