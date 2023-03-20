@@ -1,3 +1,6 @@
+### Info
+- These extended classed are used to update the Vips processor for Zoomify.php, the new processor `ExtendVips` can be used for process which accepts the `tileFormat` config property
+- There are some issues with the implementation though ( due to my limitation on PHP ), but with the new changes, the run.php can now accept new image configs to create different tileSize ( GD has problem with > 256px tiles ) and tileLayout ( default on zoomify )
 ### Config object
 | Property           | Default Value | Value Type | Description | Accepted Values |
 |--------------------|---------------|------------|---|-------------------|
