@@ -20,7 +20,7 @@ Origin Readme can be [found here](https://github.com/Daniel-KM/LibraryZoomify/bl
 | tileOverlap        | 0             | int        | The overlap of tiles in pixels   | Any non-negative integer value (e.g., 0, 1, 2)     |
 | tileFormat         | 'jpg'         | string     | The format of the output tiles   | 'jpg', 'png', 'gif', or any other supported image format by the selected processor           |
 | tileQuality        | 85            | int        | The quality of the output tiles (only applicable for lossy formats like JPEG)                         | Any integer value between 1 and 100 (inclusive), where 1 is the lowest quality (highest compression) and 100 is the highest quality (lowest compression) |
-| * tileLayout        | 'zoomiy'            | string        | Supported output layout for libvips  | allowed: dz, zoomify, google, iiif, iiif3 |  
+| * tileLayout        | 'zoomiy'            | string        | Supported output layout for libvips  | allowed: deepzoom ( will convert to `dz` for vips ), zoomify, google, iiif, iiif3 |  
 ### Generated files on default config
 ```
 // Setup the Zoomify library.
