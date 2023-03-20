@@ -1,0 +1,57 @@
+<script src="//openseadragon.github.io/openseadragon/openseadragon.min.js"></script>
+
+<script>
+    (async () => {
+        const deepzoomImages = await fetch("output/output.json");
+        const deepzoomImagesJson = await deepzoomImages.json();
+        console.log(deepzoomImagesJson);
+
+        const origins = {
+        //   'Cloudflare R2': 'https://pub-86f282ae363f4081866b8bd5b5257f26.r2.dev/output',
+        //   'Storj Share': 'https://link.storjshare.io/raw/jxjr763bu67fhekbf464daweg6cq/beyondspace-deepzoom/zoomify/output',
+        //   'Twicpics': 'https://bangank36.twic.pics/zoomify',
+          'Local': '/output'
+        };
+
+        deepzoomImagesJson.forEach((image, index) => {
+          for (let source in origins) {
+            const viewId = `seadragon-viewer-${index}-${origin}`;
+            const defaultWidth = 800;
+            const height = defaultWidth * image.originHeight / image.originWidth;
+            const template = `
+                <div id="${viewId}" style="width:${defaultWidth}px; height:${height}px;"></div>
+              `;
+            document.body.insertAdjacentHTML('beforeend', template);
+                
+            let tileSources;
+
+            switch (image.format) {
+                case 'zoomify':
+                default:
+                    tileSources = [{
+                        //required	
+                        type:       "zoomifytileservice",
+                        width:      image.originWidth,
+                        height:     image.originHeight,
+                        tilesUrl:   `${origins[source]}/${image.image}/`,
+                        //optional
+                        tileSize: image.tileSize,
+                        tileOverlap: image.tileOverlap,
+                        fileFormat: 'jpg'
+                    }];
+                    break;
+                case 'deepzoom':
+                    tileSources = `${origins[source]}/${image.image}/output.dzi`;
+                    break;
+            }
+
+            var viewer = OpenSeadragon({
+                id: viewId,
+                prefixUrl: "https://cdn.jsdelivr.net/gh/Benomrans/openseadragon-icons@main/images/",
+                tileSources
+                });
+            }
+        });
+    })();
+        
+</script>
