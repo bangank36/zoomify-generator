@@ -7,7 +7,7 @@ use ZoomImage\ExtendZoomify;
 // Set your configuration options
 $globalConfig = [
     // Add your config options here
-    'tileLayout' => 'deepzoom',
+    'tileLayout' => 'zoomify',
     'tileSize' => 512,
     'tileOverlap' => 0,
     'tileQuality' => 100,
@@ -84,6 +84,16 @@ $images = [
         'source' => 'input/pexels-max-rahubovskiy-5997992.jpg',
         'destination' => 'output/'.'pexels-max-rahubovskiy-5997992',
         'config' => [ /* image specific configs */
+            "tileSize" => 512,
+        ],
+        'enable' => true,
+    ],
+    [
+        'name' => 'pexels-max-rahubovskiy-5997992',
+        'source' => 'input/pexels-max-rahubovskiy-5997992.jpg',
+        'destination' => 'output/'.'pexels-max-rahubovskiy-5997992',
+        'config' => [ /* image specific configs */
+            'tileLayout' => 'deepzoom',
         ],
         'enable' => true,
     ]
