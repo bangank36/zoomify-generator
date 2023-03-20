@@ -1,9 +1,8 @@
 <?php
 require 'vendor/autoload.php';
+require './extend/extendZoomify.php';
 
-// use Imagick;
-use DanielKm\Zoomify\Zoomify;
-use DanielKm\Zoomify\ZoomifyFactory;
+use ZoomImage\ExtendZoomify;
 
 // Set your configuration options
 $globalConfig = [
@@ -101,9 +100,6 @@ $config = [
     "destinationRemove" => true,
 ];
 
-// Setup the Zoomify library
-$factory = new ZoomifyFactory();
-
 // Loop through the $images array and process each image
 foreach ($images as $image) {
     if ($image['enable']) {
@@ -113,8 +109,8 @@ foreach ($images as $image) {
         $source = $image['source'];
         $destination = $image['destination'].'--'.$config['tileFormat'];
 
-        // Setup the Zoomify library with the merged config
-        $zoomify = $factory($config);
+        // Setup the Zoomify library.
+        $zoomify = new ExtendZoomify($config);
 
         // Process the source file and save tiles in the destination folder
         $result = $zoomify->process($source, $destination);
