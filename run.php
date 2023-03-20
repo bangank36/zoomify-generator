@@ -7,12 +7,12 @@ use ZoomImage\ExtendZoomify;
 // Set your configuration options
 $globalConfig = [
     // Add your config options here
-    'tileFormat' => 'zoomify',
-    'tileSize' => 256,
+    'tileLayout' => 'deepzoom',
+    'tileSize' => 512,
     'tileOverlap' => 0,
     'tileQuality' => 100,
     'destinationRemove' => true,
-    'processor' => 'GD'
+    'processor' => 'ExtendVips'
 ];
 
 function getFolderSizeAndFileCount($dir) {
@@ -84,7 +84,6 @@ $images = [
         'source' => 'input/pexels-max-rahubovskiy-5997992.jpg',
         'destination' => 'output/'.'pexels-max-rahubovskiy-5997992',
         'config' => [ /* image specific configs */
-            'tileSize' => 256
         ],
         'enable' => true,
     ]
@@ -107,7 +106,7 @@ foreach ($images as $image) {
         $config = array_merge($globalConfig, $image['config']);
 
         $source = $image['source'];
-        $destination = $image['destination'].'--'.$config['tileFormat'];
+        $destination = $image['destination'].'--'.$config['tileLayout'];
 
         // Setup the Zoomify library.
         $zoomify = new ExtendZoomify($config);
@@ -122,13 +121,13 @@ foreach ($images as $image) {
 
         // Grab the result of all images into JSON file
         $fileOutput = array(
-            "image" => $image["name"].'--'.$config['tileFormat'],
+            "image" => $image["name"].'--'.$config['tileLayout'],
             "status" => $result,
             "fileCount" => $fileCount - 1,
             "folderSize" => $folderSize,
             "tileSize" => $config['tileSize'],
             "tileOverlap" => $config['tileOverlap'],
-            "format" => $config['tileFormat']
+            "format" => $config['tileLayout']
         );
 
         // Create a resized version of the image
