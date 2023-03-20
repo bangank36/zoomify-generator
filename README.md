@@ -30,4 +30,4 @@ $zoomify = new ExtendZoomify($config);
 $result = $zoomify->process($source, $destination);
 ```
 ### Modify the main `run.php` to run against a list of images
-TBD
+https://github.com/bangank36/zoomify-generator/blob/9bfc96d33fddc3d6e05f7e8a73096eca8378700a/run.php#L116
